@@ -3,15 +3,15 @@ import urllib.request
 import re
 import sys
 
-def download_easylist():
-    print("Downloading EasyList...")
+def download_filterlist():
+    print("Downloading FilterList...")
     url = "https://easylist.to/easylist/easylist.txt"
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     with urllib.request.urlopen(req) as response:
         return response.read().decode('utf-8').splitlines()
 
 def convert_to_dnr(lines):
-    print("Converting EasyList to DeclarativeNetRequest rules...")
+    print("Converting FilterList to DeclarativeNetRequest rules...")
     rules = []
     rule_id = 1
     
@@ -50,7 +50,7 @@ def convert_to_dnr(lines):
     return rules
 
 def main():
-    lines = download_easylist()
+    lines = download_filterlist()
     rules = convert_to_dnr(lines)
     
     output_file = '/home/cyber/CODES/aurablock/extension/rules.json'

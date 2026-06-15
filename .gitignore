@@ -2,6 +2,17 @@
 build/
 extension_build/
 backend/aurablock-server
+backend/bin/
+
+# Databases
+*.db
+*.sqlite
+backend/aurablock.db
+debug.db
+
+# Logs
+*.log
+extension/log.txt
 
 # Private Keys and Certificates (CRITICAL: Do not commit!)
 *.pem

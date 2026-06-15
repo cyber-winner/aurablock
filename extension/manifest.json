@@ -328,7 +328,7 @@
     "storage",
     "userScripts"
   ],
-  "short_name": "uBO Lite",
+  "short_name": "AuraBlock",
   "storage": {
     "managed_schema": "managed_storage.json"
   },

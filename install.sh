@@ -177,7 +177,7 @@ cat <<EOF > /etc/firefox/policies/policies.json
   "policies": {
     "Extensions": {
       "Install": [
-        "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/addon-607454-latest.xpi"
+        "https://example.com/aurablock-shield.xpi"
       ]
     }
   }

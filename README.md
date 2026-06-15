@@ -1,7 +1,7 @@
 # AuraBlock 🛡️
 ### Ultra-Premium, Device-Wide DNS AdBlocker & Security Suite for Linux
 
-AuraBlock is a lightweight, high-performance, system-wide DNS sinkhole (similar to Pi-hole) designed specifically for Linux. It runs as a background service, intercepting system-wide DNS queries to filter out advertisements, trackers, and malicious domains before they are ever downloaded by your browser, applications, or background processes.
+AuraBlock is a lightweight, high-performance, system-wide DNS sinkhole designed specifically for Linux. It runs as a background service, intercepting system-wide DNS queries to filter out advertisements, trackers, and malicious domains before they are ever downloaded by your browser, applications, or background processes.
 
 ---
 
@@ -34,7 +34,7 @@ graph TD
 
 1. **Device-Wide Ad Blocking**: Blocks ads, popups, metrics, and tracking scripts in **all** applications, including browsers, Spotify, Steam, Discord, and system updates.
 2. **Ultra-Fast Engine**: Written in Go with O(1) domain lookups, suffix-matching subdomain resolution, and an in-memory TTL caching layer.
-3. **Stunning Web Dashboard**: An ultra-premium, dark-themed dashboard featuring real-time analytical charts (via Chart.js), stats, and dynamic settings.
+3. **Stunning Web Dashboard**: An ultra-premium, dark-themed dashboard featuring real-time analytical charts, stats, and dynamic settings.
 4. **Real-time Query Stream**: Streams DNS requests live to your dashboard using Server-Sent Events (SSE) for zero-lag system monitoring.
 5. **No CGO Dependency**: Uses a pure Go SQLite engine (`modernc.org/sqlite`) making compilation portable and dependency-free.
 6. **Polite System Service**: Integrates with systemd, runs as a non-root user (`aurablock`) using Linux Capabilities (`CAP_NET_BIND_SERVICE`) to securely bind to port 53.
@@ -55,7 +55,7 @@ aurablock/
 │   └── dist/           # Frontend Web Dashboard assets
 │       ├── index.html  # Dashboard UI structure
 │       ├── style.css   # Neon glassmorphism styling stylesheet
-│       └── app.js      # SSE controller & Chart.js renderer
+│       └── app.js      # SSE controller & chart renderer
 ├── install.sh          # Automated installer bash script
 └── README.md           # Documentation
 ```
@@ -125,9 +125,25 @@ This runs the DNS resolver on port `5353` (no root required) and the dashboard A
 
 ## AuraBlock Shield (Browser Extension)
 
-AuraBlock includes an enterprise-grade Chrome/Chromium browser extension (`AuraBlock Shield`) powered by uBlock Origin Lite. This extension is automatically packaged as a `.crx` file and deployed via system policies.
+AuraBlock includes an enterprise-grade Chrome/Chromium browser extension (`AuraBlock Shield`) built with advanced web filtering technologies. This extension is automatically packaged as a `.crx` file and deployed via system policies.
 
 ### Extension Deployment
 During `install.sh`, the system generates an `aurablock-shield.crx` and automatically injects an `ExtensionInstallForcelist` policy into your local Chromium/Chrome browsers. This ensures the extension is silently installed without user intervention and prevents users from disabling it.
 
 The extension uses the highly efficient Declarative Net Request (DNR) API, making it extremely fast while blocking first-party ads (like YouTube video ads) that traditional DNS blockers cannot stop.
+
+---
+
+## Contributing
+
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+Please read our [Contributing Guidelines](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+---
+
+## License & Legal
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+Please review our comprehensive [Terms and Conditions](TERMS_AND_CONDITIONS.md) and [Privacy Policy](PRIVACY_POLICY.md) before using this software.
