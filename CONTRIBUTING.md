@@ -4,7 +4,7 @@ First off, thank you for considering contributing to AuraBlock! It's people like
 
 ## Where do I go from here?
 
-If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/your-username/aurablock/issues) first to see if it's already being tracked. If not, go ahead and open a new issue!
+If you've noticed a bug or have a feature request, make sure to check our [Issues](https://github.com/cyber-winner/aurablock/issues) first to see if it's already being tracked. If not, go ahead and open a new issue!
 
 ## Fork & create a branch
 
