@@ -34,7 +34,7 @@ jobs:
         python scripts/build_extension.py
 
     - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: build-artifacts
         path: |
@@ -64,7 +64,7 @@ jobs:
         "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup.iss
 
     - name: Upload Installer Artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: AuraBlock-Windows-Installer
         path: release/AuraBlock-Setup-v1.0.0.exe
