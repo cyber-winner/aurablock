@@ -17,7 +17,7 @@ SolidCompression=yes
 PrivilegesRequired=admin
 ArchitecturesInstallIn64BitMode=x64
 UninstallDisplayIcon={app}\aurablock.exe
-SetupIconFile=compiler:SetupClassicIcon.ico
+SetupIconFile=aurablock.ico
 
 [Files]
 Source: "..\aurablock.exe"; DestDir: "{app}"; Flags: ignoreversion

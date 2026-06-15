@@ -9,7 +9,7 @@ on:
 jobs:
   build-windows:
     name: Build Windows Installer
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     permissions:
       contents: write # Required for GitHub Releases
 
@@ -37,8 +37,13 @@ jobs:
         python scripts/build_extension.py
 
     - name: Compile Inno Setup Installer (AuraBlock-Setup.exe)
+      uses: MinhasKamal/setup-inno-setup@v1
+      with:
+        version: '6.2.2'
+
+    - name: Run Inno Setup Compiler
       run: |
-        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup.iss
+        iscc windows/setup.iss
 
     - name: Upload Installer Artifact
       uses: actions/upload-artifact@v4
