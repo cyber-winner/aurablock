@@ -7,12 +7,9 @@ on:
   workflow_dispatch: # Allow manual triggering from the Actions tab
 
 jobs:
-  build-windows:
-    name: Build Windows Installer
+  build:
+    name: Build Go and Extension
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Required for GitHub Releases
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -30,20 +27,41 @@ jobs:
     - name: Build Go Backend (aurablock.exe)
       run: |
         cd backend
-        go build -ldflags="-s -w" -o ../aurablock.exe
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o ../aurablock.exe
 
     - name: Package Chrome/Edge Extension
       run: |
         python scripts/build_extension.py
 
-    - name: Compile Inno Setup Installer (AuraBlock-Setup.exe)
-      uses: MinhasKamal/setup-inno-setup@v1
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
       with:
-        version: '6.2.2'
+        name: build-artifacts
+        path: |
+          aurablock.exe
+          extension_build/
+          dist/
+          windows/
+          LICENSE
+          PRIVACY_POLICY.md
+          TERMS_AND_CONDITIONS.md
+
+  package:
+    name: Build Windows Installer
+    needs: build
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
 
     - name: Run Inno Setup Compiler
       run: |
-        iscc windows/setup.iss
+        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup.iss
 
     - name: Upload Installer Artifact
       uses: actions/upload-artifact@v4
