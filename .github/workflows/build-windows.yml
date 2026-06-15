@@ -1,0 +1,58 @@
+name: Build Windows Release
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags (e.g., v1.0.0)
+  workflow_dispatch: # Allow manual triggering from the Actions tab
+
+jobs:
+  build-windows:
+    name: Build Windows Installer
+    runs-on: windows-latest
+    permissions:
+      contents: write # Required for GitHub Releases
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Build Go Backend (aurablock.exe)
+      run: |
+        cd backend
+        go build -ldflags="-s -w" -o ../aurablock.exe
+
+    - name: Package Chrome/Edge Extension
+      run: |
+        python scripts/build_extension.py
+
+    - name: Compile Inno Setup Installer (AuraBlock-Setup.exe)
+      run: |
+        "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" windows\setup.iss
+
+    - name: Upload Installer Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: AuraBlock-Windows-Installer
+        path: release/AuraBlock-Setup-v1.0.0.exe
+
+    - name: Publish to GitHub Releases
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: release/AuraBlock-Setup-v1.0.0.exe
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
