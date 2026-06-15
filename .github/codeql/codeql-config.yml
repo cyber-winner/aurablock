@@ -1,0 +1,5 @@
+name: "AuraBlock CodeQL Config"
+
+queries:
+  # Run the most comprehensive security and quality checks
+  - uses: security-and-quality
