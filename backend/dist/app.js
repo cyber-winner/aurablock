@@ -199,17 +199,30 @@ function renderTrafficChart(hourlyData) {
   const totals = [];
   const blocked = [];
   
-  // Format hourly details (sort by hour)
+  // Create a map of data keyed by local hour label
+  const dataMap = {};
   hourlyData.forEach(h => {
-    labels.push(`${h.hour}:00`);
-    totals.push(h.total);
-    blocked.push(h.blocked);
+    // h.hour is a UTC ISO string (e.g. "2026-06-15T09:00:00Z")
+    const localDate = new Date(h.hour);
+    // Auto-detect local timezone and format
+    const localHourLabel = `${String(localDate.getHours()).padStart(2, '0')}:00`;
+    dataMap[localHourLabel] = h;
   });
-  
-  if (labels.length === 0) {
-    // Placeholder 24h labels if database empty
-    for (let i = 0; i < 24; i++) {
-      labels.push(`${String(i).padStart(2, '0')}:00`);
+
+  // Generate the last 24 hours relative to right now in local time
+  const now = new Date();
+  now.setMinutes(0, 0, 0); // truncate to current hour
+
+  for (let i = 23; i >= 0; i--) {
+    const d = new Date(now.getTime() - (i * 60 * 60 * 1000));
+    const label = `${String(d.getHours()).padStart(2, '0')}:00`;
+    labels.push(label);
+    
+    if (dataMap[label]) {
+      totals.push(dataMap[label].total);
+      blocked.push(dataMap[label].blocked);
+    } else {
+      // Fill missing hours with zeroes for a continuous graph
       totals.push(0);
       blocked.push(0);
     }

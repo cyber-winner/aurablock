@@ -161,7 +161,7 @@ func (db *DB) GetStats() (map[string]interface{}, error) {
 	}
 
 	hourlyQuery := `
-		SELECT strftime('%H', timestamp) as hour, COUNT(*) as total, SUM(CASE WHEN status='BLOCKED' THEN 1 ELSE 0 END) as blocked
+		SELECT strftime('%Y-%m-%dT%H:00:00Z', timestamp) as hour, COUNT(*) as total, SUM(CASE WHEN status='BLOCKED' THEN 1 ELSE 0 END) as blocked
 		FROM logs
 		WHERE timestamp >= datetime('now', '-24 hours')
 		GROUP BY hour

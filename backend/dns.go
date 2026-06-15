@@ -83,7 +83,7 @@ func NewDNSServer(addr string, bm *BlocklistManager, db *DB, pubSub *LogPubSub) 
 		db:        db,
 		cache:     NewDNSCache(),
 		pubSub:    pubSub,
-		upstreams: []string{"1.1.1.1:53", "8.8.8.8:53"},
+		upstreams: []string{"100.100.100.100:53", "192.168.1.1:53", "1.1.1.1:53", "8.8.8.8:53"},
 		enabled:   true,
 	}
 }
