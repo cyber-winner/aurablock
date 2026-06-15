@@ -10,8 +10,8 @@ on:
 
 jobs:
   analyze:
-    name: Analyze
-    runs-on: ubuntu-latest
+    name: Analyze (${{ matrix.language }} on ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
     permissions:
       actions: read
       contents: read
@@ -21,6 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'go', 'javascript', 'python' ]
+        os: [ 'ubuntu-latest', 'windows-latest' ]
 
     steps:
     - name: Checkout repository
