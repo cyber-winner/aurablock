@@ -1,0 +1,15 @@
+# Build output and compiled binaries
+build/
+extension_build/
+backend/aurablock-server
+
+# Private Keys and Certificates (CRITICAL: Do not commit!)
+*.pem
+extension_key.pem
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Go modules
+vendor/

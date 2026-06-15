@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraBlock Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-logo">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div class="brand-text">
+          <h1>AuraBlock</h1>
+          <span>Device-Wide DNS AdBlocker</span>
+        </div>
+      </div>
+      <nav class="sidebar-menu">
+        <a href="#overview" class="menu-item active" data-target="overview">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Overview</span>
+        </a>
+        <a href="#live-logs" class="menu-item" data-target="live-logs">
+          <i class="fa-solid fa-satellite-dish"></i>
+          <span>Live Streams</span>
+        </a>
+        <a href="#blocked-history" class="menu-item" data-target="blocked-history">
+          <i class="fa-solid fa-circle-minus"></i>
+          <span>Blocked History</span>
+        </a>
+        <a href="#blocklists" class="menu-item" data-target="blocklists">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Blocklists</span>
+        </a>
+        <a href="#custom-rules" class="menu-item" data-target="custom-rules">
+          <i class="fa-solid fa-user-gear"></i>
+          <span>Custom Rules</span>
+        </a>
+        <a href="#settings" class="menu-item" data-target="settings">
+          <i class="fa-solid fa-gears"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+      <div class="sidebar-status">
+        <div class="status-indicator-container">
+          <span class="status-indicator active" id="status-indicator"></span>
+          <span class="status-text" id="status-text">Active</span>
+        </div>
+        <button class="btn btn-toggle" id="global-toggle">
+          <i class="fa-solid fa-power-off"></i> Disable
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="top-bar">
+        <div class="page-title">
+          <h2 id="current-section-title">Dashboard Overview</h2>
+        </div>
+        <div class="system-stats">
+          <div class="stat-badge">
+            <span class="label">Upstream DNS</span>
+            <span class="value" id="topbar-upstream">1.1.1.1</span>
+          </div>
+          <div class="stat-badge">
+            <span class="label">Total DB Size</span>
+            <span class="value" id="topbar-dbsize">0 MB</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Sections -->
+      <div class="sections-container">
+        
+        <!-- SECTION: OVERVIEW -->
+        <section id="overview-section" class="content-section active">
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon purple">
+                <i class="fa-solid fa-globe"></i>
+              </div>
+              <div class="stat-details">
+                <h3>Total Queries</h3>
+                <p class="stat-value" id="stat-total">0</p>
+                <span class="stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> Live updates</span>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon coral">
+                <i class="fa-solid fa-ban"></i>
+              </div>
+              <div class="stat-details">
+                <h3>Ads Blocked</h3>
+                <p class="stat-value" id="stat-blocked">0</p>
+                <span class="stat-trend text-coral" id="stat-blocked-trend">0% block rate</span>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon cyan">
+                <i class="fa-solid fa-percent"></i>
+              </div>
+              <div class="stat-details">
+                <h3>Block Percentage</h3>
+                <p class="stat-value" id="stat-percent">0.0%</p>
+                <div class="progress-bar-container">
+                  <div class="progress-bar" id="stat-percent-progress" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-icon green">
+                <i class="fa-solid fa-shield-heart"></i>
+              </div>
+              <div class="stat-details">
+                <h3>Blocked Domains</h3>
+                <p class="stat-value" id="stat-domains-count">0</p>
+                <span class="stat-trend text-green" id="update-blocklists-btn"><i class="fa-solid fa-rotate"></i> Update now</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="charts-row">
+            <div class="chart-container-card card-large">
+              <div class="card-header">
+                <h3>DNS Traffic History (Last 24 Hours)</h3>
+              </div>
+              <div class="card-body">
+                <canvas id="trafficChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top Lists Row -->
+          <div class="lists-row">
+            <div class="list-container-card">
+              <div class="card-header">
+                <h3>Top Blocked Domains</h3>
+              </div>
+              <div class="card-body">
+                <ul class="top-domains-list" id="top-blocked-list">
+                  <li class="empty-state">No block data available</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="list-container-card">
+              <div class="card-header">
+                <h3>Top Queried Domains</h3>
+              </div>
+              <div class="card-body">
+                <ul class="top-domains-list" id="top-queried-list">
+                  <li class="empty-state">No query data available</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: LIVE LOGS -->
+        <section id="live-logs-section" class="content-section">
+          <div class="control-header">
+            <h3>Live DNS Resolution Feed</h3>
+            <div class="filters">
+              <input type="text" id="log-search" class="form-input search-input" placeholder="Filter domain...">
+              <button class="btn btn-secondary" id="clear-logs">Clear Screen</button>
+            </div>
+          </div>
+          
+          <div class="logs-viewport-card">
+            <div class="table-container">
+              <table class="logs-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Query Domain</th>
+                    <th>Type</th>
+                    <th>Client</th>
+                    <th>Status</th>
+                    <th>Resolution</th>
+                    <th>Latency</th>
+                  </tr>
+                </thead>
+                <tbody id="logs-stream-body">
+                  <!-- Stream logs append here dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: BLOCKED HISTORY -->
+        <section id="blocked-history-section" class="content-section">
+          <div class="control-header">
+            <h3>Blocked Queries Log</h3>
+            <div class="filters">
+              <input type="text" id="blocked-search" class="form-input search-input" placeholder="Filter domain...">
+              <button class="btn btn-secondary" id="refresh-blocked">Refresh</button>
+            </div>
+          </div>
+          
+          <div class="logs-viewport-card">
+            <div class="table-container">
+              <table class="logs-table">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Blocked Domain</th>
+                    <th>Type</th>
+                    <th>Client</th>
+                    <th>Answer</th>
+                  </tr>
+                </thead>
+                <tbody id="blocked-history-body">
+                  <!-- Blocked history query results append here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: BLOCKLISTS -->
+        <section id="blocklists-section" class="content-section">
+          <div class="grid-split">
+            <!-- Left Panel: Lists Manager -->
+            <div class="manager-card">
+              <div class="card-header">
+                <h3>Managed DNS Blocklists</h3>
+              </div>
+              <div class="card-body">
+                <div class="list-items-container" id="blocklists-manager-container">
+                  <!-- Blocklist items dynamically generated -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Panel: Add List Form -->
+            <div class="form-card">
+              <div class="card-header">
+                <h3>Add New Blocklist</h3>
+              </div>
+              <div class="card-body">
+                <form id="add-list-form">
+                  <div class="form-group">
+                    <label for="list-name">List Name</label>
+                    <input type="text" id="list-name" class="form-input" placeholder="e.g. EasyList Malware" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="list-url">Blocklist URL</label>
+                    <input type="url" id="list-url" class="form-input" placeholder="https://example.com/hosts.txt" required>
+                    <span class="help-text">Must be plain text hosts file format or single domain per line.</span>
+                  </div>
+                  <button type="submit" class="btn btn-primary w-full">
+                    <i class="fa-solid fa-plus"></i> Add List
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: CUSTOM RULES -->
+        <section id="custom-rules-section" class="content-section">
+          <div class="grid-split">
+            <!-- Left Panel: Rules Table -->
+            <div class="manager-card flex-2">
+              <div class="card-header">
+                <h3>Domain Exception Rules</h3>
+                <div class="filters-small">
+                  <input type="text" id="rule-search" class="form-input search-input" placeholder="Search rules...">
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-container">
+                  <table class="rules-table">
+                    <thead>
+                      <tr>
+                        <th>Domain</th>
+                        <th>Type</th>
+                        <th>Comment</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rules-list-body">
+                      <!-- Custom rules populated here -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Panel: Add Rule Form -->
+            <div class="form-card">
+              <div class="card-header">
+                <h3>Add Custom Rule</h3>
+              </div>
+              <div class="card-body">
+                <form id="add-rule-form">
+                  <div class="form-group">
+                    <label for="rule-domain">Domain Name</label>
+                    <input type="text" id="rule-domain" class="form-input" placeholder="e.g. ads.spotify.com" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Rule Action</label>
+                    <div class="radio-group">
+                      <label class="radio-label">
+                        <input type="radio" name="rule-type" value="ALLOW" checked>
+                        <span class="custom-radio badge-allow"><i class="fa-solid fa-check"></i> Whitelist</span>
+                      </label>
+                      <label class="radio-label">
+                        <input type="radio" name="rule-type" value="BLOCK">
+                        <span class="custom-radio badge-block"><i class="fa-solid fa-ban"></i> Blacklist</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="rule-comment">Comment</label>
+                    <input type="text" id="rule-comment" class="form-input" placeholder="Allow spotify background updates">
+                  </div>
+                  <button type="submit" class="btn btn-primary w-full">
+                    <i class="fa-solid fa-plus"></i> Add Exception
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- SECTION: SETTINGS -->
+        <section id="settings-section" class="content-section">
+          <div class="settings-grid">
+            <div class="settings-card">
+              <div class="card-header">
+                <h3>Upstream DNS Servers</h3>
+              </div>
+              <div class="card-body">
+                <form id="upstream-settings-form">
+                  <div class="form-group">
+                    <label for="primary-upstream">Primary DNS Server</label>
+                    <input type="text" id="primary-upstream" class="form-input" placeholder="1.1.1.1:53" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="secondary-upstream">Secondary DNS Server</label>
+                    <input type="text" id="secondary-upstream" class="form-input" placeholder="8.8.8.8:53" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Upstreams
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <div class="settings-card">
+              <div class="card-header">
+                <h3>System Deployment Instructions</h3>
+              </div>
+              <div class="card-body markdown-style">
+                <p>To enable AuraBlock system-wide on this Linux device, DNS queries must be pointed to <code>127.0.0.1</code>.</p>
+                
+                <h4>1. Systemd Service</h4>
+                <p>An installer script is provided at the root of the project. Run it to install AuraBlock as a daemon:</p>
+                <pre><code>sudo ./install.sh</code></pre>
+                
+                <h4>2. Configure Linux DNS</h4>
+                <p>If using NetworkManager, modify your active connection to use DNS <code>127.0.0.1</code>, or update <code>/etc/resolv.conf</code>:</p>
+                <pre><code>nameserver 127.0.0.1</code></pre>
+                
+                <p class="settings-tip"><i class="fa-solid fa-lightbulb text-cyan"></i> Tip: If Tailscale is active, DNS resolves via tailscale. You can configure custom DNS settings in the Tailscale console to point to this local machine's IP address.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+  
+  <script src="app.js"></script>
+</body>
+</html>
